@@ -20,7 +20,7 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true,
       minLength: 6,
-      maxLength: 20,
+      
     },
     followers: [
       {
@@ -44,19 +44,19 @@ const userSchema = new mongoose.Schema(
       type: String,
       default: "",
     },
-    bio:{   
+    bio: {
       type: String,
       default: "",
     },
-    link:{   
+    link: {
       type: String,
       default: "",
-    }
+    },
   },
   {
     timestamps: true,
   }
 );
 
-const User = mongoose.model("User",userSchema)
-export default User
+const User = mongoose.model("User", userSchema);
+export default User;

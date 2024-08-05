@@ -1,22 +1,23 @@
-import express from "express"
-import authRoutes from "./routes/auth.routes.js"
-import dotenv from "dotenv"
+import express from "express";
+import dotenv from "dotenv";
+import authRoutes from "./routes/auth.routes.js";
 import connectMongoDB from "./db/connectDb.js";
 
-dotenv.config()
+dotenv.config();
 
 const app = express();
-const PORT =process.env.PORT || 8000
+const PORT = process.env.PORT || 8000;
 
-app.get("/",(req,res)=>{
-    res.send("Server is running")
-})
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
-app.use('/api/auth',authRoutes)
-console.log(process.env.MONGO_DB_URI);
+app.get("/", (req, res) => {
+  res.send("Server is running");
+});
 
+app.use("/api/auth", authRoutes);
 
-app.listen( PORT,()=>{
-    console.log("Server is running on port 8000");
-    connectMongoDB()
-})
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
+  connectMongoDB();
+});
