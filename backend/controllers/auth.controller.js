@@ -26,6 +26,13 @@ export const signup = async (req, res) => {
 
     console.log("Creating new user");
 
+    if (password.length < 6) {
+      console.log("Password too short");
+      return res
+        .status(400)
+        .json({ error: "Password Should Be Atleast 6 Characters Long" });
+    }
+
     // Hash password
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
@@ -61,3 +68,58 @@ export const signup = async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
+
+export const login = async (req, res) => {
+  try {
+    const { username, password } = req.body;
+    const user = await User.findOne({ username });
+    if (!user) {
+      console.log("User not found");
+      return res.status(400).json({ error: "User not found" });
+    }
+    const isPasswordCorrect = await bcrypt.compare(
+      password,
+      user?.password || ""
+    );
+    if (!isPasswordCorrect) {
+      console.log("Incorrect password");
+      return res.status(400).json({ error: "Incorrect password" });
+    }
+    generateTokenAndCookie(user._id, res);
+    res.status(200).json({
+      _id: user._id,
+      fullname: user.fullname,
+      username: user.username,
+      email: user.email,
+      followers: user.followers,
+      following: user.following,
+      profileImg: user.profileImg,
+      coverImg: user.coverImg,
+      message: "user logged in",
+    });
+  } catch (error) {
+    console.error("Error in login controller:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
+export const logout = async (req, res) => {
+  try {
+    res.cookie("token","",{maxAge:0});
+    res.status(200).json({ message: "user logged out" });
+  } catch (error) {
+    console.log("Error in logout controller:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+    
+  }
+};
+
+export const getMe = async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id).select("-password");
+    res.status(200).json(user);
+  } catch (error) {
+    console.log("Error in getMe controller:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+    
+  }}  
