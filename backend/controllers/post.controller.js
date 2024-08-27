@@ -43,13 +43,11 @@ export const deletePost = async (req, res) => {
     if (post.user.toString() !== req.user._id.toString()) {
       return res.status(401).json({ error: "You can't delete this post" });
     }
-    console.log("1");
+ 
 
     if (post.img) {
       const imgid = post.img.split("/").pop().split(".")[0];
       await cloudinary.uploader.destroy(imgid);
-
-      console.log("2");
     }
     await Post.findByIdAndDelete(id);
     res.status(200).json({ message: "Post deleted successfully" });
