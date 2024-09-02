@@ -21,11 +21,13 @@ const ProfilePage = () => {
   const [coverImg, setCoverImg] = useState(null);
   const [profileImg, setProfileImg] = useState(null);
   const [feedType, setFeedType] = useState("posts");
+  
 
   const coverImgRef = useRef(null);
   const profileImgRef = useRef(null);
 
   const { username } = useParams();
+console.log(username);
 
   const { follow, isPending } = useFollow();
   const { data: authUser } = useQuery({ queryKey: ["authUser"] });
@@ -50,6 +52,8 @@ const ProfilePage = () => {
       }
     },
   });
+  console.log(user);
+  
 
   const { isUpdatingProfile, updateProfile } = useUpdateUserProfile();
 
@@ -174,7 +178,7 @@ const ProfilePage = () => {
 
               <div className="flex flex-col gap-4 px-4 mt-14">
                 <div className="flex flex-col">
-                  <span className="text-lg font-bold">{user?.fullName}</span>
+                  <span className="text-lg font-bold">{user?.fullname}</span>
                   <span className="text-sm text-slate-500">
                     @{user?.username}
                   </span>
