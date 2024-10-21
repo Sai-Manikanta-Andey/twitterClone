@@ -1,11 +1,28 @@
 version: "3"
 services:
-  app:
-    build: .
+  backend:
+    build: ./backend
+    container_name: twitter-backend
+    ports:
+      - "5000:5000"
+    environment:
+      - MONGO_DB_URI=mongodb+srv://saipc0007:GAV0UBHWdyRkFWAM@cluster0.mjh407s.mongodb.net/twitterdb?retryWrites=true&w=majority&appName=Cluster0
+      - JWT_SECRET=MdpDKfQ0xqkBzjHP/G5pQtDSYaJjiyoSyukXmJ1cwbs=
+      - CLOUDINARY_CLOUD_NAME=djmtqvzl4
+      - CLOUDINARY_API_KEY=598466573956223
+      - CLOUDINARY_API_SECRET=Ru6z2WHZxCOxgwZWG2JtN6uy48g
+      - NODE_ENV=development
+    networks:
+      - twitter-clone-network
+
+  frontend:
+    build: ./frontend
+    container_name: twitter-frontend
     ports:
       - "3000:3000"
-    environment:
-      NODE_ENV: production
-    volumes:
-      - .:/app
-    restart: always
+    networks:
+      - twitter-clone-network
+
+networks:
+  twitter-clone-network:
+    driver: bridge
