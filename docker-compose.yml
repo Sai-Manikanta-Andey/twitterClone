@@ -1,28 +1,36 @@
-version: "3"
+name: mern-app
+
 services:
   backend:
-    build: ./backend
-    container_name: twitter-backend
+    build: 
+      context : ./backend
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
     ports:
-      - "5000:5000"
-    environment:
-      - MONGO_DB_URI=mongodb+srv://saipc0007:GAV0UBHWdyRkFWAM@cluster0.mjh407s.mongodb.net/twitterdb?retryWrites=true&w=majority&appName=Cluster0
-      - JWT_SECRET=MdpDKfQ0xqkBzjHP/G5pQtDSYaJjiyoSyukXmJ1cwbs=
-      - CLOUDINARY_CLOUD_NAME=djmtqvzl4
-      - CLOUDINARY_API_KEY=598466573956223
-      - CLOUDINARY_API_SECRET=Ru6z2WHZxCOxgwZWG2JtN6uy48g
-      - NODE_ENV=development
+      - 5000:5000
+    env_file:
+      - ./backend/.env
     networks:
-      - twitter-clone-network
+      - mern-network
 
   frontend:
-    build: ./frontend
-    container_name: twitter-frontend
+    build: 
+      context : ./frontend
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
     ports:
-      - "3000:3000"
+      - 3000:3000
     networks:
-      - twitter-clone-network
+      - mern-network
+    depends_on:
+      - backend
 
 networks:
-  twitter-clone-network:
+  mern-network:
     driver: bridge
